@@ -8,8 +8,18 @@ router.get('/', async (req, res) => {
     const products = await Product.find();
     res.json(products);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Error fetching products' });
+  }
+});
+
+// 🟢 GET single product by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching product" });
   }
 });
 
@@ -21,19 +31,6 @@ router.post('/', async (req, res) => {
     await newProduct.save();
     res.json({ message: 'Product added', product: newProduct });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error adding product' });
-  }
-});
-
-router.post('/', async (req, res) => {
-  try {
-    const { name, price, image, description } = req.body;
-    const newProduct = new Product({ name, price, image, description });
-    await newProduct.save();
-    res.json({ message: 'Product added', product: newProduct });
-  } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Error adding product' });
   }
 });
@@ -64,17 +61,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// ✅ Export router at the END
 module.exports = router;
-
-
-// 🟢 GET single product by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
