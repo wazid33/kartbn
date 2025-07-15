@@ -1,16 +1,18 @@
 const express = require('express');
-const router = express.Router();
-const Product = require('../models/Product');
+const app = express();
+const mongoose = require('mongoose');
+const Product = require('./models/Product'); // Your Product model
 
-// 🟢 GET all products
-router.get('/', async (req, res) => {
+app.get('/api/products', async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find();  // Fetch products from DB
     res.json(products);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching products' });
+    console.error('Error fetching products:', err);
+    res.status(500).json({ message: "Error fetching products" });
   }
 });
+
 
 // 🟢 GET single product by ID
 router.get('/:id', async (req, res) => {
